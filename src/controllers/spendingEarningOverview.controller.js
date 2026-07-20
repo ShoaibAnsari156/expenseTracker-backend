@@ -12,6 +12,7 @@ const updateMonthlySpending = async (userId, date, category, amount) => {
                 setDefaultsOnInsert: true
             }
         )
+        return updatedData
     } catch (error) {
         console.log("Error in Updating the Monthly spending", error);
     }
@@ -26,4 +27,4 @@ const getSpendingEarningOverviewDetails = async (req, res) => {
         return res.status(500).json({ message: "Error in getting overview data", error: error })
     }
 }
-export { updateMonthlySpending,getSpendingEarningOverviewDetails }
+export { updateMonthlySpending, getSpendingEarningOverviewDetails }

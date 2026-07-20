@@ -25,7 +25,7 @@ const createUser = async (req, res) => {
         return res.status(201).json({ message: "User created successfully", user: newUser });
     }
     catch (error) {
-        console.log(error);
+        console.log("Error while creating new User", error);
         return res.status(500).json({ message: "Internal server error", error: error.message });
     }
 }
@@ -54,7 +54,7 @@ const loginUser = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error);
+        console.log("Error while Logging in User", error);
         return res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 }
@@ -72,7 +72,8 @@ const logoutUser = async (req, res) => {
 }
 const getUserProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select("-password");
+        const userId = req.params.userId
+        const user = await User.findOne({userId}).select("-password");
         if (!user) return res.status(404).json({ message: "User not found." });
         return res.status(200).json({ user });
     }

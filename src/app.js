@@ -9,9 +9,11 @@ app.use(cors({
 import cookieParser from "cookie-parser";
 import transactionsRouter from "./routes/transactions.route.js";
 import recordsRouter from "./routes/userAmountStatus.route.js";
+import { authMiddleware } from "./utils/authMiddleware.js";
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api/v1/user", userRouter)
+app.use(authMiddleware)
 app.use("/api/v1/transactions", transactionsRouter)
 app.use("/api/v1/records", recordsRouter)
 

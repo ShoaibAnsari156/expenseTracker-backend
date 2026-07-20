@@ -16,6 +16,10 @@ const balances = new mongoose.Schema({
     totalExpense: {
         type: Number,
         required: true
+    },
+    currentMonth: {
+        type: String, // e.g. "2026-07"
+        default: () => new Date().toISOString().slice(0, 7)
     }
 })
 export const Balances = mongoose.model("Balances", balances);

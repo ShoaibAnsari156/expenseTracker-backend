@@ -17,10 +17,13 @@ const addTransaction = async (req, res) => {
             {
                 $push: {
                     transactions: {
-                        date,
-                        title,
-                        category,
-                        amount
+                        $each: [{
+                            date,
+                            title,
+                            category,
+                            amount
+                        }],
+                        $position: 0
                     }
                 }
             },
@@ -36,6 +39,8 @@ const addTransaction = async (req, res) => {
         // console.log("transactions", transaction);
         await balanceMaintain(userId, amount, category)
         const monthlyTransactionsOverview = await updateMonthlySpending(userId, date, category, amount)
+        // console.log("monthlyTransactionsOverview", monthlyTransactionsOverview);
+
         return res.status(200).json({
             message: "Transaction saved successfully",
             data: {
@@ -45,7 +50,7 @@ const addTransaction = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error);
+        console.log("Error while adding the new transaction", error);
         return res.status(500).json({
             message: "Internal Server Error",
             error: error.message
@@ -54,19 +59,38 @@ const addTransaction = async (req, res) => {
 };
 const getTransactions = async (req, res) => {
     try {
-        const { userId } = req.params.id;
-        const allTransactions = await RecentTransactions.findOne(userId)
+        const userId = req.params.id;
+        const allTransactions = await RecentTransactions.findOne({ userId }, { transactions: { $slice: 5 } })
         // console.log(allTransactions);
 
-        if (allTransactions) {
+        if (allTransactions && allTransactions.transactions.length > 0) {
+
             return res.status(200).json({ message: "All Transactions Get Successfully", data: allTransactions })
         }
         else {
-            return res.status(404).json({ message: "No Transactions Data Present at this moment" })
+            return res.status(200).json({ message: "No Transactions Data Present at this moment", data: [] })
         }
     } catch (error) {
-        console.log(error);
+        console.log("Error while getting transaction list", error);
         return res.status(500).json({ message: "Internal Server Error", error: error })
     }
 }
-export { addTransaction, getTransactions };
+const getFullTransactions = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const allTransactions = await RecentTransactions.findOne({ userId })
+        // console.log(allTransactions);
+
+        if (allTransactions && allTransactions.transactions.length > 0) {
+
+            return res.status(200).json({ message: "All Transactions Get Successfully", data: allTransactions })
+        }
+        else {
+            return res.status(200).json({ message: "No Transactions Data Present at this moment", data: [] })
+        }
+    } catch (error) {
+        console.log("Error while getting transaction list", error);
+        return res.status(500).json({ message: "Internal Server Error", error: error })
+    }
+}
+export { addTransaction, getTransactions, getFullTransactions };

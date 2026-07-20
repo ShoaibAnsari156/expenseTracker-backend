@@ -6,5 +6,5 @@ const userRouter = Router();
 userRouter.route("/register").post(createUser);
 userRouter.route("/login").post(loginUser);
 userRouter.route("/logout").get(logoutUser);
-userRouter.route("/profile").get(authMiddleware, getUserProfile);
+userRouter.route("/:userId/profile").get(authMiddleware,getUserProfile);
 export default userRouter;
