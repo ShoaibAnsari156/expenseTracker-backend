@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { UserIdCounter } from "./UserIdCounter.model.js";
+import { UserIdCounter } from "./userIdCounter.model.js";
 import bcrypt from "bcrypt";
 const userSchema = new Schema({
     username: {
